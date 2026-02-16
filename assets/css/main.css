@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: 248 250 252;
+    --color-surface: 255 255 255;
+    --color-accent: 20 184 166;
+    --color-accent-hover: 13 148 136;
+    --color-muted: 100 116 139;
+    --color-text: 30 41 59;
+    --radius-card: 1rem;
+    --radius-card-lg: 1.25rem;
+    --radius-btn: 0.75rem;
+    --radius-pill: 9999px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+    --shadow-card-hover: 0 12px 24px -8px rgb(0 0 0 / 0.1), 0 4px 12px -4px rgb(0 0 0 / 0.06);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+    --shadow-nav: 0 4px 24px -4px rgb(0 0 0 / 0.08), 0 2px 8px -2px rgb(0 0 0 / 0.04);
+    --font-sans: 'Plus Jakarta Sans', 'Noto Sans Thai', system-ui, sans-serif;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply antialiased text-slate-800;
+    font-family: var(--font-sans);
+    background-color: rgb(var(--color-bg));
+  }
+  /* Focus visible for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-teal-500/60 ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  .section-pad {
+    @apply px-4 py-16 sm:px-6 sm:py-20 md:px-8 md:py-24 lg:py-28;
+  }
+  .container-narrow {
+    @apply mx-auto w-full max-w-6xl;
+  }
+  /* Section label (uppercase teal) */
+  .section-label {
+    @apply text-teal-600 text-xs sm:text-sm font-semibold tracking-wider uppercase;
+  }
+  /* Card surface: white, border, shadow, rounded */
+  .card-surface {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-[var(--shadow-card)];
+  }
+  .card-surface-hover {
+    @apply transition-all duration-300 hover:shadow-[var(--shadow-card-hover)] hover:border-teal-200/80;
+  }
+  /* Primary button style */
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl bg-teal-500 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-teal-600 focus-visible:ring-2 focus-visible:ring-teal-500/60 focus-visible:ring-offset-2;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:border-teal-300 hover:bg-slate-50 hover:text-teal-700 focus-visible:ring-2 focus-visible:ring-teal-500/60 focus-visible:ring-offset-2;
+  }
+  /* หน้าแรก */
+  .page-home {
+    @apply min-h-screen;
+  }
+}
