@@ -1,5 +1,5 @@
 <template>
-  <section id="contact" class="section-pad bg-gradient-to-b from-white via-teal-50/30 to-white relative overflow-hidden">
+  <section id="contact" class="section-pad  relative overflow-hidden">
     <!-- Decorative elements -->
     <div class="absolute top-0 left-1/4 w-64 h-64 bg-teal-200/20 rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-200/20 rounded-full blur-3xl"></div>

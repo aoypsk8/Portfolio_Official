@@ -39,11 +39,11 @@
         />
         <div class="space-y-10 md:space-y-0 timeline-cards">
           <article
-            v-for="(project, i) in projects"
+            v-for="(project, i) in (projects ?? [])"
             :key="`${project.title}-${i}`"
             :class="[
               'group/item relative flex flex-col md:flex-row md:items-center gap-6 md:gap-8',
-              i < projects.length - 1 ? 'md:mb-24' : ''
+              i < (projects ?? []).length - 1 ? 'md:mb-24' : ''
             ]"
           >
             <div
@@ -52,65 +52,46 @@
                 i % 2 === 0 ? 'md:justify-end md:pr-8' : 'md:justify-start md:pl-8 md:order-2'
               ]"
             >
-              <div
-                class="group/card relative w-full max-w-md rounded-3xl border-2 border-slate-200/80 bg-white/95 backdrop-blur-sm shadow-xl p-8 sm:p-10 transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/30 hover:border-teal-300/50 hover:-translate-y-3 overflow-hidden"
+              <!-- Card: preview image + logo + name + description; click opens modal -->
+              <button
+                type="button"
+                class="group/card w-full max-w-md rounded-3xl border-2 border-slate-200/80 bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden text-left transition-all duration-300 hover:shadow-2xl hover:shadow-teal-500/20 hover:border-teal-300/50 hover:-translate-y-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                @click="selectedProject = project"
               >
-                <!-- Shine effect -->
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/card:translate-x-[100%] transition-transform duration-1000"></div>
-                
-                <!-- Gradient overlay -->
-                <div class="absolute inset-0 bg-gradient-to-br from-teal-50/0 via-transparent to-blue-50/0 group-hover/card:from-teal-50/60 group-hover/card:to-blue-50/30 transition-all duration-500"></div>
-                
-                <!-- Decorative corner -->
-                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-teal-100/0 to-transparent group-hover/card:from-teal-200/40 transition-all duration-500 rounded-bl-full"></div>
-                
-                <div class="relative z-10">
-                  <div class="flex items-start gap-5 mb-5">
-                    <!-- Enhanced Logo -->
-                    <div
-                      v-if="project.logo"
-                      class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold shrink-0 shadow-xl ring-4 ring-white/50 group-hover/card:scale-110 group-hover/card:rotate-3 transition-all duration-300"
-                      :style="{ backgroundColor: project.logoBg ?? '#ef4444', color: 'white' }"
-                    >
-                      {{ project.logo }}
-                    </div>
-                    <!-- Project number badge -->
-                    <div class="ml-auto px-3 py-1.5 rounded-full bg-gradient-to-r from-teal-500 to-teal-600 text-white text-xs font-bold shadow-lg">
-                      #{{ i + 1 }}
-                    </div>
+                <!-- Preview image only (not logo) -->
+                <div v-if="previewImage(project)" class="w-full aspect-video bg-slate-100 overflow-hidden">
+                  <img
+                    :src="previewImage(project) ?? ''"
+                    :alt="project.title"
+                    class="w-full h-full object-contain"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="p-6 sm:p-8 flex items-start gap-4">
+                  <div
+                    v-if="project.logo"
+                    class="w-12 h-12 rounded-xl flex items-center justify-center text-lg font-bold shrink-0 overflow-hidden"
+                    :style="{ backgroundColor: isLogoUrl(project.logo) ? 'transparent' : (project.logoBg ?? '#0d9488'), color: isLogoUrl(project.logo) ? undefined : 'white' }"
+                  >
+                    <img v-if="isLogoUrl(project.logo)" :src="project.logo" :alt="project.title" class="w-full h-full object-contain">
+                    <span v-else>{{ project.logo }}</span>
                   </div>
                   <div class="min-w-0 flex-1">
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-3 group-hover/card:text-teal-700 transition-colors duration-300">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-600 text-xs font-bold">#{{ i + 1 }}</span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mb-2 group-hover/card:text-teal-700 transition-colors">
                       {{ project.title }}
                     </h2>
-                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6 border-l-4 border-teal-400/50 pl-4">
+                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-3">
                       {{ project.description }}
                     </p>
-                    <!-- Enhanced View Project Link -->
-                    <a
-                      v-if="project.link"
-                      :href="project.link"
-                      target="_blank"
-                      rel="noopener"
-                      class="group/link inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold text-sm sm:text-base hover:from-teal-600 hover:to-teal-700 hover:shadow-xl hover:shadow-teal-500/50 transform hover:scale-105 transition-all duration-300 relative overflow-hidden"
-                    >
-                      <!-- Link shine effect -->
-                      <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover/link:translate-x-[100%] transition-transform duration-700"></span>
-                      <span class="relative z-10">View project</span>
-                      <svg class="w-5 h-5 relative z-10 transform group-hover/link:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                      </svg>
-                    </a>
-                    
-                    <!-- Decorative bottom line -->
-                    <div class="mt-6 pt-6 border-t border-slate-200/50 flex items-center gap-2">
-                      <div class="h-1 flex-1 bg-gradient-to-r from-teal-400 to-transparent rounded-full"></div>
-                      <div class="w-2 h-2 rounded-full bg-teal-400"></div>
-                      <div class="h-1 w-8 bg-gradient-to-l from-teal-300 to-transparent rounded-full"></div>
-                    </div>
+                    <p class="mt-3 text-teal-600 text-sm font-medium">
+                      View details →
+                    </p>
                   </div>
                 </div>
-              </div>
+              </button>
             </div>
             <!-- Enhanced Timeline dot -->
             <div
@@ -146,7 +127,7 @@
       
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div
-          v-for="(item, i) in companyProjects"
+          v-for="(item, i) in (companyProjects ?? [])"
           :key="`${item.name}-${i}`"
           class="group relative rounded-2xl border-2 border-slate-200/80 bg-white/95 backdrop-blur-sm shadow-lg p-6 sm:p-8 transition-all duration-500 hover:shadow-xl hover:shadow-teal-500/20 hover:border-teal-300/50 hover:-translate-y-2 overflow-hidden"
         >
@@ -157,10 +138,11 @@
             <!-- Enhanced Logo -->
             <div
               v-if="item.logo"
-              class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold shrink-0 shadow-xl ring-4 ring-teal-100/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300"
-              :style="{ backgroundColor: item.logoBg ?? '#ef4444', color: 'white' }"
+              class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl font-bold shrink-0 shadow-xl ring-4 ring-teal-100/50 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 overflow-hidden"
+              :style="{ backgroundColor: isLogoUrl(item.logo) ? 'transparent' : (item.logoBg ?? '#ef4444'), color: isLogoUrl(item.logo) ? undefined : 'white' }"
             >
-              {{ item.logo }}
+              <img v-if="isLogoUrl(item.logo)" :src="item.logo" :alt="item.name" class="w-full h-full object-contain">
+              <span v-else>{{ item.logo }}</span>
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-lg sm:text-xl font-bold text-slate-800 group-hover:text-teal-700 transition-colors duration-300">
@@ -178,14 +160,36 @@
         </div>
       </div>
     </section>
+
+    <!-- Modal: full details + all images (same as home) -->
+    <ProjectDetailModal
+      :open="!!selectedProject"
+      :project="selectedProject"
+      @close="selectedProject = null"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import type { Project } from '~/types/portfolio'
 import { PROJECT_PAGE_ITEMS, COMPANY_PROJECTS, PROJECT_PAGE_FINISHED_LABEL } from '~/constants/projectPage'
+import { useApiProjects, useApiCompanyProjects } from '~/composables/usePortfolioApi'
 
-const projects = PROJECT_PAGE_ITEMS
-const companyProjects = COMPANY_PROJECTS
+const selectedProject = ref<Project | null>(null)
+
+function isLogoUrl(logo: string): boolean {
+  return logo.startsWith('http://') || logo.startsWith('https://') || logo.startsWith('/')
+}
+
+/** Preview image for card: project.image or first of project.images (not logo). */
+function previewImage(project: { image?: string; images?: string[] }): string | null {
+  if (project.image) return project.image
+  if (project.images?.length) return project.images[0]
+  return null
+}
+
+const { data: projects } = useApiProjects(PROJECT_PAGE_ITEMS)
+const { data: companyProjects } = useApiCompanyProjects(COMPANY_PROJECTS)
 const finishedLabel = PROJECT_PAGE_FINISHED_LABEL
 
 const projectTitleRef = ref<HTMLElement | null>(null)

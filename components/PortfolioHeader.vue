@@ -56,8 +56,17 @@
         </li>
       </ul>
 
-      <!-- ขวา: ปุ่ม Contact + Hamburger -->
+      <!-- ขวา: Login (Admin) + Contact + Hamburger -->
       <div class="flex items-center gap-1.5 sm:gap-2">
+        <NuxtLink
+          to="/login"
+          class="hidden sm:inline-flex items-center justify-center rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px]"
+          :class="atTop
+            ? 'text-white/90 hover:text-white hover:bg-white/15 focus-visible:ring-white/40'
+            : 'text-slate-600 hover:text-teal-600 hover:bg-slate-100 focus-visible:ring-teal-500/50'"
+        >
+          Login
+        </NuxtLink>
         <NuxtLink
           to="/contact"
           class="hidden sm:inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 min-h-[44px]"
@@ -116,6 +125,15 @@
             :style="dropdownPanelStyle"
           >
             <ul class="py-2 md:py-1">
+              <li>
+                <NuxtLink
+                  to="/login"
+                  class="block px-5 py-3.5 text-[15px] font-medium text-slate-700 hover:bg-slate-50 transition-colors rounded-lg mx-2 md:px-3 md:py-2 md:text-sm md:mx-1.5 md:rounded-md"
+                  @click="mobileOpen = false"
+                >
+                  Login (Admin)
+                </NuxtLink>
+              </li>
               <li v-for="item in links" :key="item.href">
                 <NuxtLink
                   v-if="isInternalLink(item.href)"

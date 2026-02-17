@@ -15,19 +15,25 @@
 <script setup lang="ts">
 /** แผนที่ลูกโลก Mapbox — ใช้เป็น background ใน Hero หรือใน section ได้ */
 
+/** ลำดับตำแหน่งตาม scroll: Laos → Germany → Australia → Japan → USA */
+export type GlobeLocationKey = 'laos' | 'germany' | 'australia' | 'japan' | 'usa'
+
 const props = withDefaults(
   defineProps<{
     /** โหมด background = ไม่หมุนอัตโนมัติ */
     background?: boolean
-    /** ตำแหน่งที่แสดง: เปลี่ยนตาม scroll ได้ (laos / germany) */
-    location?: 'laos' | 'germany'
+    /** ตำแหน่งที่แสดง: เปลี่ยนตาม scroll ได้ */
+    location?: GlobeLocationKey
   }>(),
   { background: false, location: 'laos' }
 )
 
-const LOCATIONS = {
-  laos: { center: [102.6, 18.2] as [number, number], label: 'Laos' },
-  germany: { center: [10.45, 51.16] as [number, number], label: 'Germany' }
+const LOCATIONS: Record<GlobeLocationKey, { center: [number, number]; label: string }> = {
+  laos: { center: [102.6, 18.2], label: 'Laos' },
+  germany: { center: [10.45, 51.16], label: 'Germany' },
+  australia: { center: [133.77, -25.27], label: 'Australia' },
+  japan: { center: [138.25, 36.2], label: 'Japan' },
+  usa: { center: [-95.71, 37.09], label: 'USA' }
 }
 const GLOBE_ZOOM = 1.6
 
@@ -133,7 +139,7 @@ let markerLabelEl: HTMLDivElement | null = null
 const FLY_DURATION_MS = 1800
 let flyEndTimeoutId: ReturnType<typeof setTimeout> | null = null
 
-function updateMapLocation(location: 'laos' | 'germany') {
+function updateMapLocation(location: GlobeLocationKey) {
   if (!map || !marker) return
   const loc = LOCATIONS[location]
   if (markerLabelEl) markerLabelEl.textContent = loc.label

@@ -10,6 +10,12 @@ export interface ActionButton {
   href: string
 }
 
+/** GET /api/navigation response */
+export interface NavigationResponse {
+  links: NavLink[]
+  heroActions: { primary: ActionButton[]; secondary: ActionButton[] }
+}
+
 export interface ContactLink extends ActionButton {
   icon: string
 }
@@ -20,6 +26,8 @@ export interface Project {
   tags?: string[]
   link?: string
   image?: string
+  /** แกลเลอรีรูป prototype/screenshot หลายรูปต่อโปรเจกต์ */
+  images?: string[]
   /** โลโก้หรือตัวอักษรย่อ (เช่น "m" สำหรับ MMoneyX) */
   logo?: string
   logoBg?: string

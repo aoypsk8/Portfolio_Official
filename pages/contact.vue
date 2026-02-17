@@ -30,10 +30,10 @@
           <!-- Enhanced Header -->
           <div class="mb-8">
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-800 mb-3 tracking-tight bg-gradient-to-r from-slate-800 via-slate-700 to-teal-700 bg-clip-text text-transparent">
-              {{ contact.headingLine1 }}
+              {{ contact?.headingLine1 }}
             </h1>
             <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold text-slate-700 mb-6">
-              {{ contact.headingLine2 }}
+              {{ contact?.headingLine2 }}
             </h2>
             <div class="w-24 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent mb-8"></div>
           </div>
@@ -41,13 +41,13 @@
           <!-- Enhanced Paragraphs -->
           <div class="space-y-5 mb-8">
             <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
-              {{ contact.paragraph1 }}
+              {{ contact?.paragraph1 }}
             </p>
             <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
-              {{ contact.paragraph2BeforeEmail }}
+              {{ contact?.paragraph2BeforeEmail }}
               <!-- Enhanced Email Link -->
               <a
-                :href="`mailto:${contact.email}`"
+                :href="`mailto:${contact?.email}`"
                 class="group/email inline-flex items-center gap-2 px-4 py-2 mx-1 rounded-xl bg-gradient-to-r from-teal-50 to-teal-100/80 border-2 border-teal-200/50 text-teal-700 font-semibold hover:from-teal-500 hover:to-teal-600 hover:text-white hover:border-teal-500 hover:shadow-lg hover:shadow-teal-500/50 transform hover:scale-105 transition-all duration-300 relative overflow-hidden"
               >
                 <!-- Email shine effect -->
@@ -55,12 +55,12 @@
                 <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span class="relative z-10">{{ contact.email }}</span>
+                <span class="relative z-10">{{ contact?.email }}</span>
               </a>
-              {{ contact.paragraph2AfterEmail }}
+              {{ contact?.paragraph2AfterEmail }}
             </p>
             <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
-              {{ contact.paragraph3 }}
+              {{ contact?.paragraph3 }}
             </p>
           </div>
 
@@ -69,7 +69,7 @@
             <p class="text-sm font-semibold text-teal-600 mb-4">Connect with me:</p>
             <div class="flex flex-wrap gap-4">
               <a
-                v-for="s in contact.socialLinks"
+                v-for="s in (contact?.socialLinks ?? [])"
                 :key="s.label"
                 :href="s.href"
                 target="_blank"
@@ -112,8 +112,10 @@
 <script setup lang="ts">
 import { h } from 'vue'
 import { CONTACT_PAGE } from '~/constants/contactPage'
+import { useApiContactPage } from '~/composables/usePortfolioApi'
 
-const contact = CONTACT_PAGE
+const { data: contactFromApi } = useApiContactPage(CONTACT_PAGE)
+const contact = computed(() => contactFromApi.value ?? CONTACT_PAGE)
 const contactSectionRef = ref<HTMLElement | null>(null)
 useScrollReveal(contactSectionRef, { start: 'top 88%' })
 
@@ -157,7 +159,7 @@ function getSocialIcon(label: string) {
       })
     ])
   }
-  const fallbackIcon = contact.socialLinks?.find((link) => link.label === label)?.icon || ''
+  const fallbackIcon = contact.value?.socialLinks?.find((link: { label: string }) => link.label === label)?.icon || ''
   return icons[label] || (() => h('span', fallbackIcon))
 }
 

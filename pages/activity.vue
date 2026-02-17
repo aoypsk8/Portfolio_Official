@@ -193,15 +193,20 @@
 <script setup lang="ts">
 import { ACTIVITY_ITEMS, ACTIVITY_INITIAL_COUNT } from '~/constants/activityPage'
 import type { ActivityItem } from '~/types/portfolio'
+import { useApiActivities } from '~/composables/usePortfolioApi'
 
-const initialCount = ACTIVITY_INITIAL_COUNT
-const displayCount = ref(initialCount)
+const { data: activitiesData } = useApiActivities({ items: ACTIVITY_ITEMS, initialCount: ACTIVITY_INITIAL_COUNT })
+const items = computed(() => activitiesData.value?.items ?? ACTIVITY_ITEMS)
+const initialCountRef = computed(() => activitiesData.value?.initialCount ?? ACTIVITY_INITIAL_COUNT)
 
-const visibleItems = computed(() => ACTIVITY_ITEMS.slice(0, displayCount.value))
-const hasMore = computed(() => displayCount.value < ACTIVITY_ITEMS.length)
+const displayCount = ref(ACTIVITY_INITIAL_COUNT)
+watch(initialCountRef, (n) => { displayCount.value = n }, { immediate: true })
+
+const visibleItems = computed(() => items.value.slice(0, displayCount.value))
+const hasMore = computed(() => displayCount.value < items.value.length)
 
 function showMore() {
-  displayCount.value = Math.min(displayCount.value + 6, ACTIVITY_ITEMS.length)
+  displayCount.value = Math.min(displayCount.value + 6, items.value.length)
 }
 
 function gridCardClass(item: ActivityItem) {

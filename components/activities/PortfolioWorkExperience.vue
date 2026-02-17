@@ -1,5 +1,5 @@
 <template>
-  <section class="section-pad bg-gradient-to-b from-slate-50/50 via-white to-white">
+  <section class="section-pad ">
     <div class="container-narrow max-w-3xl mx-auto">
       <div class="text-center mb-12 sm:mb-16">
         <p class="section-label mb-3 text-teal-600">

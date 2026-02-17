@@ -6,7 +6,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       /** Mapbox access token สำหรับ globe (ตั้งใน .env เป็น NUXT_PUBLIC_MAPBOX_ACCESS_TOKEN) */
-      mapboxAccessToken: ''
+      mapboxAccessToken: '',
+      /** Base URL ของ Portfolio Backend API (ตั้งใน .env เป็น NUXT_PUBLIC_API_BASE เช่น http://localhost:4000) */
+      apiBase: ''
     }
   },
   vite: {

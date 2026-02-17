@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen flex flex-col bg-slate-50/80">
-    <PortfolioHeader />
+    <PortfolioHeader :links="navLinks" />
     <!-- หน้าแรกให้ Hero ลอยใต้ Nav; หน้าอื่นเพิ่ม padding กันเนื้อทับ Nav -->
     <main class="flex-1" :class="{ 'pt-[4.5rem]': route.path !== '/' }">
       <slot />
@@ -27,6 +27,7 @@
         </ul>
         <p class="text-slate-500 text-xs text-center sm:text-sm">
           © {{ currentYear }} AOY PHONGSAKOUN. All Rights Reserved.
+          <NuxtLink to="/login" class="ml-2 text-teal-600 hover:underline">Admin</NuxtLink>
         </p>
       </div>
     </footer>
@@ -35,10 +36,12 @@
 
 <script setup lang="ts">
 import { NAV_LINKS } from '~/constants/navigation'
+import { useApiNavigation } from '~/composables/usePortfolioApi'
 
 const route = useRoute()
 const currentYear = new Date().getFullYear()
-const navLinks = NAV_LINKS
+const { data: navData } = useApiNavigation({ links: NAV_LINKS, heroActions: { primary: [], secondary: [] } })
+const navLinks = computed(() => navData.value?.links ?? NAV_LINKS)
 
 function isInternal(href: string) {
   return href === '/' || href === '/about' || href === '/project' || href === '/activity' || href === '/certificates' || href === '/contact'

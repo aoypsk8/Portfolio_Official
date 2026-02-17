@@ -1,5 +1,5 @@
 <template>
-  <section id="about" class="relative section-pad overflow-hidden bg-gradient-to-b from-slate-50/90 via-teal-50/40 to-white">
+  <section id="about" class="relative section-pad overflow-hidden ">
     <!-- Decorative gradient overlay -->
     <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-teal-50/30 to-transparent pointer-events-none z-[1]"></div>
     

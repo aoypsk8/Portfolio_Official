@@ -24,7 +24,7 @@
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
       >
         <article
-          v-for="(cert, i) in certificates"
+          v-for="(cert, i) in (certificates ?? [])"
           :key="`${cert.title}-${i}`"
           class="group relative rounded-3xl border-2 border-slate-200/80 bg-white/95 backdrop-blur-sm shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/30 hover:border-teal-300/50 hover:-translate-y-3 flex flex-col"
         >
@@ -126,8 +126,9 @@
 <script setup lang="ts">
 import { CERTIFICATES } from '~/constants/certificatesPage'
 import type { Certificate } from '~/types/portfolio'
+import { useApiCertificates } from '~/composables/usePortfolioApi'
 
-const certificates = CERTIFICATES
+const { data: certificates } = useApiCertificates(CERTIFICATES)
 const certificatesTitleRef = ref<HTMLElement | null>(null)
 const certificatesGridRef = ref<HTMLElement | null>(null)
 

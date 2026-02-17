@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-white via-slate-50/50 to-white relative overflow-hidden">
+  <div class="min-h-screen  relative overflow-hidden">
     <!-- Decorative background elements -->
     <div class="fixed inset-0 pointer-events-none z-0">
       <div class="absolute top-1/4 right-0 w-96 h-96 bg-teal-200/20 rounded-full blur-3xl"></div>
@@ -27,17 +27,17 @@
         <div class="flex-1 min-w-0 order-1 lg:order-2">
           <div class="mb-6">
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 mb-6 tracking-tight bg-gradient-to-r from-slate-800 via-slate-700 to-teal-700 bg-clip-text text-transparent">
-              {{ about.name }}
+              {{ about?.name }}
             </h1>
             <div class="w-24 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent mb-6"></div>
           </div>
           <p class="text-slate-600 text-base sm:text-lg leading-relaxed mb-8 border-l-4 border-teal-400/50 pl-6">
-            {{ about.bio1 }}
+            {{ about?.bio1 }}
           </p>
           <!-- Enhanced Social Media Icons -->
           <div class="flex flex-wrap gap-4">
             <a
-              v-for="s in about.socialLinks"
+              v-for="s in (about?.socialLinks ?? [])"
               :key="s.label"
               :href="s.href"
               target="_blank"
@@ -63,7 +63,7 @@
             <span class="text-xs font-semibold text-teal-600 uppercase tracking-wider">More About Me</span>
           </div>
           <p class="text-slate-600 text-base sm:text-lg leading-relaxed pl-4">
-            {{ about.bio2 }}
+            {{ about?.bio2 }}
           </p>
         </div>
         <div class="flex-shrink-0 hidden md:block group">
@@ -99,7 +99,7 @@
             <div class="h-0.5 bg-gradient-to-r from-teal-400 via-teal-300 to-transparent mb-6"></div>
             <div class="flex flex-wrap gap-3">
               <span
-                v-for="lang in about.programmingLanguages"
+                v-for="lang in (about?.programmingLanguages ?? [])"
                 :key="lang"
                 class="group/lang px-4 py-2 rounded-xl bg-gradient-to-r from-slate-50 to-slate-100/80 text-slate-700 text-sm sm:text-base font-semibold border-2 border-slate-200/70 hover:from-teal-50 hover:to-teal-100 hover:border-teal-300 hover:text-teal-800 hover:scale-110 hover:shadow-lg hover:shadow-teal-500/30 transition-all duration-300"
               >
@@ -126,7 +126,7 @@
             <div class="h-0.5 bg-gradient-to-r from-teal-400 via-teal-300 to-transparent mb-6"></div>
             <ul class="space-y-5">
               <li
-                v-for="fw in about.frameworks"
+                v-for="fw in (about?.frameworks ?? [])"
                 :key="fw.name"
                 class="group/item"
               >
@@ -168,7 +168,7 @@
             <div class="h-0.5 bg-gradient-to-r from-teal-400 via-teal-300 to-transparent mb-6"></div>
             <div class="flex flex-wrap gap-3">
               <span
-                v-for="tool in about.librariesAndTools"
+                v-for="tool in (about?.librariesAndTools ?? [])"
                 :key="tool"
                 class="group/tool px-4 py-2 rounded-xl bg-gradient-to-r from-slate-50 to-slate-100/80 text-slate-700 text-sm sm:text-base font-semibold border-2 border-slate-200/70 hover:from-teal-50 hover:to-teal-100 hover:border-teal-300 hover:text-teal-800 hover:scale-110 hover:shadow-lg hover:shadow-teal-500/30 transition-all duration-300"
               >
@@ -195,7 +195,7 @@
             <div class="h-0.5 bg-gradient-to-r from-teal-400 via-teal-300 to-transparent mb-6"></div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div
-                v-for="skill in about.otherSkills"
+                v-for="skill in (about?.otherSkills ?? [])"
                 :key="skill"
                 class="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-slate-50/50 to-transparent hover:from-teal-50/50 hover:to-teal-100/30 border-l-4 border-teal-400/50 hover:border-teal-500 transition-all duration-300 group/skill"
               >
@@ -224,7 +224,7 @@
       
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
         <div
-          v-for="(item, index) in about.languageSkills"
+          v-for="(item, index) in (about?.languageSkills ?? [])"
           :key="item.language"
           class="group relative rounded-3xl border-2 border-slate-200/80 bg-white/95 backdrop-blur-sm shadow-xl p-8 sm:p-10 transition-all duration-500 hover:shadow-2xl hover:shadow-teal-500/30 hover:border-teal-300/50 hover:-translate-y-3 overflow-hidden"
           :style="{ animationDelay: `${index * 100}ms` }"
@@ -291,8 +291,10 @@
 <script setup lang="ts">
 import { h } from 'vue'
 import { ABOUT_PAGE } from '~/constants/about'
+import { useApiAboutPage } from '~/composables/usePortfolioApi'
 
-const about = ABOUT_PAGE
+const { data: aboutFromApi } = useApiAboutPage(ABOUT_PAGE)
+const about = computed(() => aboutFromApi.value ?? ABOUT_PAGE)
 const introRef = ref<HTMLElement | null>(null)
 const bio2Ref = ref<HTMLElement | null>(null)
 const skillsRef = ref<HTMLElement | null>(null)
@@ -338,7 +340,7 @@ function getSocialIcon(label: string) {
       })
     ])
   }
-  const fallbackIcon = about.socialLinks?.find((link) => link.label === label)?.icon || ''
+  const fallbackIcon = about.value?.socialLinks?.find((link: { label: string }) => link.label === label)?.icon || ''
   return icons[label] || (() => h('span', fallbackIcon))
 }
 
